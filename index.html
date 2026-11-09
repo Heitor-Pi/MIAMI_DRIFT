@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>OMODA FLY MIAMI - 8-Bit Retro Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+    <!-- Scanline & CRT Retro Filter -->
+    <div class="crt-overlay"></div>
+
+    <!-- UI Overlay: Sound toggle -->
+    <button id="soundToggleBtn" class="sound-btn" aria-label="Ativar/Desativar Som" title="Som Ligado/Desligado">
+      <span id="soundIcon">🔊</span>
+    </button>
+
+    <!-- UI Overlay: Pause/Help or Touch Hint on Mobile -->
+    <div id="touchHint" class="touch-hint">TOQUE NA TELA PARA VOAR</div>
+
+    <!-- Start Screen Overlay -->
+    <div id="startScreen" class="overlay-screen active">
+      <div class="title-container">
+        <div class="brand-tag">CHERY &bull; OMODA</div>
+        <h1 class="game-title">OMODA<br><span class="highlight">FLY MIAMI</span></h1>
+        <div class="car-badge">MODELO: OMODA 5</div>
+      </div>
+
+      <div class="hero-preview">
+        <canvas id="carPreviewCanvas" width="96" height="56"></canvas>
+        <div class="pulse-thruster"></div>
+      </div>
+
+      <div class="instruction-box">
+        <p>🎮 CONTROLES</p>
+        <div class="control-keys">
+          <span>ESPAÇO</span> &bull; <span>CLIQUE</span> &bull; <span>TOQUE</span>
+        </div>
+        <p class="sub-inst">Desvie dos prédios e placas de Miami!</p>
+      </div>
+
+      <button id="startBtn" class="pixel-btn start-btn">START GAME</button>
+    </div>
+
+    <!-- Game Over Screen Overlay -->
+    <div id="gameOverScreen" class="overlay-screen">
+      <div class="game-over-box">
+        <h2 class="game-over-title">GAME OVER</h2>
+
+        <div class="score-card">
+          <div class="score-row">
+            <span class="label">PONTOS:</span>
+            <span id="finalScore" class="val">0</span>
+          </div>
+          <div class="score-row">
+            <span class="label">RECORDE:</span>
+            <span id="bestScore" class="val best">0</span>
+          </div>
+          <div id="newRecordBadge" class="new-record-badge hidden">NOVO RECORDE! 🏆</div>
+        </div>
+
+        <button id="restartBtn" class="pixel-btn restart-btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+/* ========================================================
+   OMODA FLY MIAMI - 8-Bit Retro Game Styles
+   Miami Synthwave / 8-Bit Arcade Aesthetic
+   ======================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+:root {
+  --miami-cyan: #00f0ff;
+  --miami-pink: #ff007f;
+  --miami-purple: #3a0066;
+  --miami-dark: #120424;
+  --miami-yellow: #ffd000;
+  --miami-orange: #ff6600;
+  --miami-white: #ffffff;
+  --font-pixel: 'Press Start 2P', monospace, sans-serif;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #2e0854 0%, #120224 85%, #080010 100%);
+  color: var(--miami-white);
+  font-family: var(--font-pixel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+/* Container do Jogo */
+#game-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: min(630px, 94vh);
+  aspect-ratio: 2 / 3;
+  background-color: #0b0216;
+  border: 4px solid var(--miami-pink);
+  border-radius: 8px;
+  box-shadow: 
+    0 0 15px rgba(255, 0, 127, 0.6),
+    0 0 35px rgba(0, 240, 255, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  #game-wrapper {
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* Canvas Principal com renderização pixelada perfeita */
+#gameCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #000;
+}
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #000;
+}
+
+/* Efeito CRT / Scanlines sutil para imersão arcade 8-bit */
+.crt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Botão de Som no topo */
+.sound-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 30;
+  background: rgba(18, 4, 36, 0.8);
+  border: 2px solid var(--miami-cyan);
+  color: var(--miami-white);
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 var(--miami-pink);
+  transition: transform 0.1s;
+}
+
+.sound-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* Dica de toque no celular */
+.touch-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1px;
+  pointer-events: none;
+  z-index: 15;
+  text-shadow: 1px 1px 0 #000;
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .touch-hint {
+    display: block;
+  }
+}
+
+/* Telas Sobrepostas (Start / Game Over) */
+.overlay-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(18, 4, 36, 0.88);
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.overlay-screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Título e Identidade Visual */
+.brand-tag {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--miami-cyan);
+  text-shadow: 0 0 8px var(--miami-cyan);
+  margin-bottom: 8px;
+}
+
+.game-title {
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--miami-white);
+  text-shadow: 
+    3px 3px 0 var(--miami-pink),
+    -2px -2px 0 var(--miami-cyan),
+    0 0 15px rgba(255, 0, 127, 0.8);
+  margin-bottom: 6px;
+  transform: skew(-4deg);
+}
+
+.game-title .highlight {
+  color: var(--miami-yellow);
+  text-shadow: 
+    3px 3px 0 var(--miami-orange),
+    0 0 10px rgba(255, 208, 0, 0.9);
+}
+
+.car-badge {
+  font-size: 9px;
+  color: var(--miami-cyan);
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--miami-cyan);
+  padding: 3px 8px;
+  display: inline-block;
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+}
+
+/* Preview do OMODA 5 na tela inicial */
+.hero-preview {
+  position: relative;
+  margin: 10px 0 24px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#carPreviewCanvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 0 10px var(--miami-cyan));
+  animation: floatCar 2s ease-in-out infinite;
+}
+
+@keyframes floatCar {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+/* Caixa de Instruções */
+.instruction-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px dashed var(--miami-cyan);
+  padding: 12px 16px;
+  margin-bottom: 26px;
+  max-width: 320px;
+  border-radius: 4px;
+}
+
+.instruction-box p {
+  font-size: 10px;
+  color: var(--miami-yellow);
+  margin-bottom: 8px;
+}
+
+.control-keys {
+  font-size: 8px;
+  color: var(--miami-cyan);
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.control-keys span {
+  background: #2a0845;
+  padding: 3px 6px;
+  border: 1px solid var(--miami-pink);
+  border-radius: 2px;
+}
+
+.sub-inst {
+  font-size: 8px !important;
+  color: #aaa !important;
+  line-height: 1.4;
+  margin-bottom: 0 !important;
+}
+
+/* Botões 8-Bit */
+.pixel-btn {
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  padding: 14px 24px;
+  color: #000;
+  background: var(--miami-yellow);
+  border: 4px solid var(--miami-white);
+  box-shadow: 
+    4px 4px 0 var(--miami-pink),
+    -4px -4px 0 var(--miami-cyan);
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  position: relative;
+  outline: none;
+}
+
+.pixel-btn:hover {
+  background: #fff;
+  color: var(--miami-pink);
+  box-shadow: 
+    5px 5px 0 var(--miami-cyan),
+    -5px -5px 0 var(--miami-yellow);
+  transform: scale(1.03);
+}
+
+.pixel-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.start-btn {
+  background: var(--miami-cyan);
+  color: #120424;
+}
+
+.start-btn:hover {
+  background: var(--miami-yellow);
+  color: #120424;
+}
+
+/* Estilos de Game Over */
+.game-over-box {
+  background: rgba(18, 4, 36, 0.95);
+  border: 3px solid var(--miami-pink);
+  padding: 24px 20px;
+  box-shadow: 
+    0 0 25px rgba(255, 0, 127, 0.5),
+    inset 0 0 15px rgba(0, 0, 0, 0.8);
+  max-width: 330px;
+  width: 100%;
+}
+
+.game-over-title {
+  font-size: 20px;
+  color: var(--miami-pink);
+  text-shadow: 
+    2px 2px 0 var(--miami-yellow),
+    0 0 10px rgba(255, 0, 127, 0.8);
+  margin-bottom: 20px;
+  animation: blinkGameOver 1s step-end infinite;
+}
+
+@keyframes blinkGameOver {
+  50% { opacity: 0.7; }
+}
+
+.score-card {
+  background: #080012;
+  border: 2px solid var(--miami-cyan);
+  padding: 16px 12px;
+  margin-bottom: 24px;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 11px;
+}
+
+.score-row:last-child {
+  margin-bottom: 0;
+}
+
+.score-row .label {
+  color: #8ce9ff;
+}
+
+.score-row .val {
+  font-size: 15px;
+  color: var(--miami-white);
+}
+
+.score-row .val.best {
+  color: var(--miami-yellow);
+}
+
+.new-record-badge {
+  margin-top: 10px;
+  font-size: 9px;
+  color: var(--miami-yellow);
+  background: rgba(255, 208, 0, 0.15);
+  border: 1px dashed var(--miami-yellow);
+  padding: 6px;
+  animation: pulseGold 0.8s ease-in-out infinite alternate;
+}
+
+.new-record-badge.hidden {
+  display: none;
+}
+
+@keyframes pulseGold {
+  from { transform: scale(0.97); }
+  to { transform: scale(1.03); }
+}
+
+.restart-btn {
+  background: var(--miami-pink);
+  color: var(--miami-white);
+  border-color: var(--miami-white);
+  box-shadow: 
+    4px 4px 0 var(--miami-cyan),
+    -4px -4px 0 var(--miami-yellow);
+}
+
+.restart-btn:hover {
+  background: var(--miami-yellow);
+  color: #120424;
+}
